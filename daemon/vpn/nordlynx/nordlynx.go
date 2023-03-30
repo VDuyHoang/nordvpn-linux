@@ -31,37 +31,34 @@ var errNoKernelModule = errors.New("interface of type wireguard not supported")
 func interfaceID() [8]byte {
 	return [8]byte{0x0, 0x0, 0x0, 0x11, 0x0, 0x5, 0x0, 0x2}
 }
+func getDefaultGateway() (net.Interface, error) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return net.Interface{}, err
+	}
+	for _, iface := range ifaces {
+		addrs, err := iface.Addrs()
+		if err != nil {
+			return net.Interface{}, err
+		}
+		for _, addr := range addrs {
+			if net.ParseIP(addr.String()).Equal(net.IPv4zero) || net.ParseIP(addr.String()).Equal(net.IPv6zero) {
+				return iface, nil
+			}
+		}
+
+	}
+	return net.Interface{}, errors.New("Couldn't get Default Gateway")
+}
 
 // SetMTU for an interface.
 func SetMTU(iface net.Interface) error {
 	var err error
 
-	c1 := exec.Command("ip", "route", "show", "default")
-	c2 := exec.Command("awk", "{print $5}")
-	c2.Stdin, err = c1.StdoutPipe()
+	defaultGateway, err := getDefaultGateway()
 	if err != nil {
-		return err
+		return nil
 	}
-
-	if err := c1.Start(); err != nil {
-		return err
-	}
-
-	out, err := c2.CombinedOutput()
-	if err != nil {
-		return errors.New(strings.Trim(string(out), "\n"))
-	}
-
-	if err := c1.Wait(); err != nil {
-		return err
-	}
-
-	defaultGatewayName := strings.Trim(string(out), "\n")
-	defaultGateway, err := net.InterfaceByName(defaultGatewayName)
-	if err != nil {
-		return err
-	}
-
 	// wireguard-quick does this
 	mtu := defaultGateway.MTU - 80
 

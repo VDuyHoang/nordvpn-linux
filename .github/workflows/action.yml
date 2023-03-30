@@ -1,0 +1,28 @@
+name: Action
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go 1.20
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20.x'
+      - name: Setup latest rust
+        run:
+          - curl https://sh.rustup.rs -sSf | sh
+      - name: Install depency
+        run:
+          - apt install -y libxml2-dev gcc iptables          
+      - name: Install mage
+        run: 
+          - git clone https://github.com/magefile/mage
+          - cd mage
+          - go run bootstrap.go
+          - cd ..
+          - rm -rf mage          
+          - cp .env.sample .env
+          - mage build:binaries
+        
