@@ -27,10 +27,9 @@ func getEnv() (map[string]string, error) {
 		env[key] = value
 	}
 	env["CENTOS"] = "0"
-	if _, err := os.Stat("/etc/redhat-release"); err == nil {
+	if _, centos := os.LookupEnv("CENTOS"); centos == true {
 		env["CENTOS"] = "1"
 	}
-
 	return env, nil
 }
 
