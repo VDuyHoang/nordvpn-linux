@@ -57,15 +57,6 @@ func (View) Docs() error {
 	return sh.Run("godoc")
 }
 
-func (View) Env() error {
-	env, err := getEnv()
-	if err != nil {
-		return err
-	}
-	fmt.Print(env)
-	return nil
-}
-
 // Download external dependencies
 func Download() error {
 	env, err := getEnv()
@@ -199,7 +190,6 @@ func (Build) BinariesDocker(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	image, err := getDockerImage(imageBuilder)
 	if err != nil {
 		return err
 	}
@@ -221,7 +211,7 @@ func (Build) BinariesDocker(ctx context.Context) error {
 	return RunDocker(
 		ctx,
 		env,
-		image,
+		getDockerImage(imageBuilder),
 		[]string{"ci/compile.sh"},
 	)
 }
@@ -259,7 +249,7 @@ func (Build) OpenvpnDocker(ctx context.Context) error {
 	return RunDocker(
 		ctx,
 		env,
-		imageBuilder,
+		getDockerImage(imageBuilder),
 		[]string{"build/openvpn/build.sh"},
 	)
 }
@@ -277,15 +267,11 @@ func (Build) Rust(ctx context.Context) error {
 	return sh.RunWith(env, "build/foss/build.sh")
 }
 
-func getDockerImage(defaultImage string) (string, error) {
-	env, err := getEnv()
-	if err != nil {
-		return defaultImage, err
+func getDockerImage(defaultImage string) string {
+	if _, centos := os.LookupEnv("CENTOS"); centos == true {
+		return centos7
 	}
-	if env["CENTOS"] == "1" {
-		return centos7, nil
-	}
-	return defaultImage, nil
+	return defaultImage
 }
 
 // Builds rust dependencies using Docker builder
@@ -294,7 +280,6 @@ func (Build) RustDocker(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	image, err := getDockerImage(imageRuster)
 	if err != nil {
 		return err
 	}
@@ -303,7 +288,7 @@ func (Build) RustDocker(ctx context.Context) error {
 	if err := RunDocker(
 		ctx,
 		env,
-		image,
+		getDockerImage(imageRuster),
 		[]string{"build/foss/build.sh"},
 	); err != nil {
 		return err
@@ -351,7 +336,7 @@ func (Build) RpmDocker(ctx context.Context) error {
 	return RunDocker(
 		ctx,
 		env,
-		imagePackager,
+		getDockerImage(imagePackager),
 		[]string{"ci/nfpm/build_packages_resources.sh", "rpm"},
 	)
 }
@@ -368,7 +353,7 @@ func (Generate) ProtobufDocker(ctx context.Context) error {
 	return RunDocker(
 		ctx,
 		env,
-		imageProtobufGenerator,
+		getDockerImage(imageProtobufGenerator),
 		[]string{"ci/generate_protobuf.sh"},
 	)
 }
@@ -411,7 +396,7 @@ func (Test) CgoDocker(ctx context.Context) error {
 	return RunDockerWithSettings(
 		ctx,
 		env,
-		imageBuilder,
+		getDockerImage(imageBuilder),
 		[]string{"ci/test.sh", "full"},
 		DockerSettings{Privileged: true},
 	)
