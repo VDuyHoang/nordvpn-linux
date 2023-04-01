@@ -23,10 +23,10 @@ jobs:
           cd mage
           go run bootstrap.go
       - 
-        name: Build Binary
+        name: Build Centos Binary
         run: |
           cp .env.sample .env          
-          CENTOS=1 mage build:binaries
+          CENTOS=1 mage build:binariesdocker
       - 
         name: Result
         run: |
