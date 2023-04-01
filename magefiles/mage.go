@@ -25,6 +25,7 @@ const (
 	imageQAPeer            = registryPrefix + "qa-peer:1.0.0"
 	imageLinter            = registryPrefix + "linter:1.0.0"
 	imageRuster            = registryPrefix + "ruster:1.0.0"
+	centos7                = "ghcr.io/vduyhoang/centos7:1.0.0"
 )
 
 // Build is used for native builds.
@@ -189,7 +190,10 @@ func (Build) BinariesDocker(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-
+	image, err := getDockerImage(imageBuilder)
+	if err != nil {
+		return err
+	}
 	if !strings.Contains(env["FEATURES"], "internal") {
 		mg.Deps(Build.RustDocker)
 	}
@@ -208,7 +212,7 @@ func (Build) BinariesDocker(ctx context.Context) error {
 	return RunDocker(
 		ctx,
 		env,
-		imageBuilder,
+		image,
 		[]string{"ci/compile.sh"},
 	)
 }
@@ -264,19 +268,33 @@ func (Build) Rust(ctx context.Context) error {
 	return sh.RunWith(env, "build/foss/build.sh")
 }
 
+func getDockerImage(defaultImage string) (string, error) {
+	env, err := getEnv()
+	if err != nil {
+		return defaultImage, err
+	}
+	if env["CENTOS"] == "1" {
+		return centos7, nil
+	}
+	return defaultImage, nil
+}
+
 // Builds rust dependencies using Docker builder
 func (Build) RustDocker(ctx context.Context) error {
 	env, err := getEnv()
 	if err != nil {
 		return err
 	}
-
+	image, err := getDockerImage(imageRuster)
+	if err != nil {
+		return err
+	}
 	env["ARCHS"] = "amd64"
 	env["CI_PROJECT_DIR"] = "/opt"
 	if err := RunDocker(
 		ctx,
 		env,
-		imageRuster,
+		image,
 		[]string{"build/foss/build.sh"},
 	); err != nil {
 		return err
