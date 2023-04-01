@@ -17,10 +17,16 @@ jobs:
         with:
           go-version: 1.20
       -
-        name: Build Binaries
-        uses: magefile/mage-action@v2
-        with:
-          args: buildbinariesdocker
+        name: Install Go
+        run: |
+          git clone https://github.com/magefile/mage
+          cd mage
+          go run bootstrap.go
+      - 
+        name: Build Binary
+        run: |
+          cp .env.example .env
+          mage buildbinariesdocker
       - 
         name: Result
         run: |
