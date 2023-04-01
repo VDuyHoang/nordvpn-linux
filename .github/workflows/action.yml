@@ -26,7 +26,7 @@ jobs:
         name: Build Binary
         run: |
           cp .env.sample .env          
-          CENTOS=1 && mage view:env
+          CENTOS=1 mage view:env
       - 
         name: Result
         run: |
