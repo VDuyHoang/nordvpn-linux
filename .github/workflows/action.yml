@@ -26,10 +26,11 @@ jobs:
         name: Build Binary
         run: |
           cp .env.sample .env
-          mage buildbinariesdocker
+          mage build:binariesDocker
       - 
         name: Result
         run: |
-          ls bin/
+          ls -la bin/
+          ls -la build/foss
           
 
