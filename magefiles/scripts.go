@@ -26,6 +26,10 @@ func getEnv() (map[string]string, error) {
 		}
 		env[key] = value
 	}
+	env["CENTOS"] = "0"
+	if _, err := os.Stat("/etc/redhat-release"); err == nil {
+		env["CENTOS"] = "1"
+	}
 
 	return env, nil
 }
