@@ -57,6 +57,15 @@ func (View) Docs() error {
 	return sh.Run("godoc")
 }
 
+func (View) Env() error {
+	env, err := getEnv()
+	if err != nil {
+		return err
+	}
+	fmt.Print(env)
+	return nil
+}
+
 // Download external dependencies
 func Download() error {
 	env, err := getEnv()
