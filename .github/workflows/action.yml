@@ -28,9 +28,24 @@ jobs:
           cp .env.sample .env          
           CENTOS=1 mage build:binariesdocker
       - 
-        name: Result
+        name: Test Go
         run: |
-          ls -la bin/
-          ls -la build/foss
+          mage test:go && true
+      -
+        name: Test cgodocker
+        run: |
+          mage test:cgodocker && true
+      -
+        name: Test gosec
+        run: |
+          mage test:gosec && true
+      -
+        name: Test hardening
+        run: |
+          mage test:hardening && true
+      -
+        name: Package
+        run: |
+          CENTOS=1 mage build:rpmdocker      
           
 

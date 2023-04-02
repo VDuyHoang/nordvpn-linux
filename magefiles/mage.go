@@ -312,8 +312,6 @@ func (Build) Rpm() error {
 func (Build) RpmDocker(ctx context.Context) error {
 	mg.Deps(Build.Data)
 	mg.Deps(Build.Notices)
-	mg.Deps(Build.BinariesDocker)
-	mg.Deps(Build.OpenvpnDocker)
 
 	env, err := getEnv()
 	if err != nil {
