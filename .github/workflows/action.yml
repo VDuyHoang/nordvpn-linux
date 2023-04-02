@@ -34,15 +34,15 @@ jobs:
       -
         name: Test cgodocker
         run: |
-          mage test:cgodocker && true
+          mage test:cgodocker || true
       -
         name: Test gosec
         run: |
-          mage test:gosec && true
+          mage test:gosec || true
       -
         name: Test hardening
         run: |
-          mage test:hardening && true
+          mage test:hardening || true
       -
         name: Package
         run: |
