@@ -48,5 +48,11 @@ jobs:
         run: |
           go install github.com/google/go-licenses@latest
           CENTOS=1 mage build:rpmdocker
+      -
+        name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpm.el7
+          path: dist/app/rpm/*.rpm
           
 
