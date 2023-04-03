@@ -301,10 +301,17 @@ func (Build) RustDocker(ctx context.Context) error {
 func (Build) Rpm() error {
 	mg.Deps(Build.Data)
 	mg.Deps(Build.Notices)
-	env := map[string]string{
-		"ARCHS":  build.Default.GOARCH,
-		"GOPATH": build.Default.GOPATH,
+	env, err := getEnv()
+	if err != nil {
+		return err
 	}
+	env["ARCH"] = build.Default.GOARCH
+	env["GOPATH"] = build.Default.GOPATH
+	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	env["CI_PROJECT_DIR"] = cwd
 	return sh.RunWith(env, "ci/nfpm/build_packages_resources.sh", "rpm")
 }
 
@@ -312,6 +319,8 @@ func (Build) Rpm() error {
 func (Build) RpmDocker(ctx context.Context) error {
 	mg.Deps(Build.Data)
 	mg.Deps(Build.Notices)
+	mg.Deps(Build.BinariesDocker)
+	mg.Deps(Build.OpenvpnDocker)
 
 	env, err := getEnv()
 	if err != nil {

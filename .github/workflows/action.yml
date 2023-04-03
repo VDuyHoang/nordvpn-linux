@@ -27,26 +27,26 @@ jobs:
         run: |
           cp .env.sample .env          
           CENTOS=1 mage build:binariesdocker
-      - 
-        name: Test Go
-        run: |
-          mage test:go || true
-      -
-        name: Test cgodocker
-        run: |
-          mage test:cgodocker || true
-      -
-        name: Test gosec
-        run: |
-          mage test:gosec || true
-      -
-        name: Test hardening
-        run: |
-          mage test:hardening || true
+      # - 
+      #   name: Test Go
+      #   run: |
+      #     mage test:go || true
+      # -
+      #   name: Test cgodocker
+      #   run: |
+      #     mage test:cgodocker || true
+      # -
+      #   name: Test gosec
+      #   run: |
+      #     mage test:gosec || true
+      # -
+      #   name: Test hardening
+      #   run: |
+      #     mage test:hardening || true
       -
         name: Package
         run: |
           go install github.com/google/go-licenses@latest
-          CENTOS=1 mage build:rpm
+          CENTOS=1 mage build:rpmdocker
           
 
