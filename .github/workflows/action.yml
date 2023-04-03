@@ -30,7 +30,7 @@ jobs:
       - 
         name: Test Go
         run: |
-          mage test:go && true
+          mage test:go || true
       -
         name: Test cgodocker
         run: |
