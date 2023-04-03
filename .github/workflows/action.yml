@@ -46,6 +46,7 @@ jobs:
       -
         name: Package
         run: |
-          CENTOS=1 mage build:rpmdocker      
+          go install github.com/google/go-licenses@latest
+          CENTOS=1 mage build:rpm
           
 
