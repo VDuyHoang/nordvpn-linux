@@ -11,8 +11,8 @@ KillMode=process
 Restart=on-failure
 RestartSec=5
 # centos7 RuntimeDirectory ignored
-RuntimeDirectory=nordvpn
-RuntimeDirectoryMode=0750
+#RuntimeDirectory=nordvpn
+#RuntimeDirectoryMode=0750
 # User=root
 Group=nordvpn
 

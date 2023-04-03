@@ -7,8 +7,8 @@ ExecStart=/usr/bin/nordfileshared
 NonBlocking=true
 KillMode=process
 # Never restart because it's possible that the user disabled nordvpnd and then this would keep on bootlooping
-RuntimeDirectory=nordfileshared
-RuntimeDirectoryMode=0700
+#RuntimeDirectory=nordfileshared
+#RuntimeDirectoryMode=0700
 
 [Install]
 WantedBy=default.target

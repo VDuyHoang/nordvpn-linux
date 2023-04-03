@@ -10,8 +10,25 @@ jobs:
         name: Checkout        
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0      
-      -        
+          fetch-depth: 0
+      -
+        name: Cache cargo build
+        id: cache-cargo
+        uses: actions/cache@v3
+        with:
+          path: build/foss/.cargo
+          key: centos7-cargo-${{ hashFiles('build/foss/Cargo.lock') }}
+      -
+        name: Cache go
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: centos7-go-${{ hashFiles('go.sum') }}
+          restore-keys: |
+            centos7-go-        
+      -
         name: Setup GO
         uses: actions/setup-go@v4
         with:
@@ -46,7 +63,6 @@ jobs:
       -
         name: Package
         run: |
-          go install github.com/google/go-licenses@latest
           CENTOS=1 mage build:rpmdocker
       -
         name: Upload artifact
