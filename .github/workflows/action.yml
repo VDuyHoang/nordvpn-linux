@@ -39,11 +39,11 @@ jobs:
           git clone https://github.com/magefile/mage
           cd mage
           go run bootstrap.go
-      - 
-        name: Build Centos Binary
-        run: |
-          cp .env.sample .env          
-          CENTOS=1 mage build:binariesdocker
+      # - 
+      #   name: Build Centos Binary
+      #   run: |
+      #     cp .env.sample .env          
+      #     CENTOS=1 mage build:binariesdocker
       # - 
       #   name: Test Go
       #   run: |
@@ -63,6 +63,7 @@ jobs:
       -
         name: Package
         run: |
+          go install github.com/google/go-licenses@latest
           CENTOS=1 mage build:rpmdocker
       -
         name: Upload artifact
