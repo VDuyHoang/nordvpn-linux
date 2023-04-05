@@ -59,3 +59,9 @@ func TestRemoveDevice(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestGetDefaultGateway(t *testing.T) {
+	category.Set(t, category.Link)
+	_, err := getDefaultGateway()
+	assert.NoError(t, err)
+}

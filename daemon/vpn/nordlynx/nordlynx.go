@@ -22,7 +22,10 @@ const (
 	defaultMTU    = 1500
 )
 
-var errNoKernelModule = errors.New("interface of type wireguard not supported")
+var (
+	errNoKernelModule   = errors.New("interface of type wireguard not supported")
+	errNoDefaultGateway = errors.New("default gateway not found")
+)
 
 // nordlynx client ipv6 address interface id (second portion of the address)
 // nordlynx requires interface id to end with 2
@@ -48,7 +51,7 @@ func getDefaultGateway() (net.Interface, error) {
 		}
 
 	}
-	return net.Interface{}, errors.New("Couldn't get Default Gateway")
+	return net.Interface{}, errNoDefaultGateway
 }
 
 // SetMTU for an interface.
